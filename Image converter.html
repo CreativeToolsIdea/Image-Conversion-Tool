@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Image Conversion Tool - convert, resize, compress, crop, rotate, watermark and create PDFs from images.">
+<title>Image Conversion Tool</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--text:#101828;--muted:#667085;--line:#e4e7ec;--primary:#635bff;--primary-dark:#5148e5;--soft:#efedff;--shadow:0 12px 32px rgba(16,24,40,.08)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav{max-width:1200px;margin:auto;height:72px;padding:0 20px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:21px;font-weight:850;letter-spacing:-.6px}.logo span{color:var(--primary)}
+nav{display:flex;gap:24px}nav a{color:#475467;text-decoration:none;font-size:14px;font-weight:650}
+.hero{max-width:1000px;margin:auto;padding:70px 20px 42px;text-align:center}.badge{display:inline-flex;background:var(--soft);color:#5148e5;padding:8px 13px;border-radius:999px;font-size:13px;font-weight:750}.hero h1{font-size:52px;line-height:1.04;letter-spacing:-2.5px;margin:18px 0 15px}.hero p{max-width:720px;margin:auto;color:var(--muted);font-size:17px;line-height:1.65}
+.container{width:min(1200px,92%);margin:auto}.category{margin-bottom:18px}.category-title{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:#667085;font-weight:800;margin:0 0 9px 3px}.category-tabs{display:flex;gap:8px;overflow:auto;padding:8px;background:#fff;border:1px solid var(--line);border-radius:17px;box-shadow:var(--shadow)}.tooltab{border:0;background:transparent;padding:12px 15px;border-radius:10px;white-space:nowrap;color:#667085;font-weight:750;cursor:pointer}.tooltab.active{background:var(--soft);color:#5148e5}
+.tool{display:none;margin:20px 0 70px}.tool.active{display:block}.panel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:25px;box-shadow:var(--shadow)}
+.drop{border:2px dashed #cfd4dc;background:#fafbff;border-radius:16px;text-align:center;padding:45px 20px;cursor:pointer;transition:.2s}.drop:hover,.drop.drag{border-color:var(--primary);background:#f7f5ff}.drop-icon{font-size:38px}.drop h3{margin:9px 0 5px}.drop p{margin:0;color:var(--muted);font-size:14px}
+input[type=file]{display:none}.controls{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:20px}.field{display:flex;flex-direction:column;gap:7px}.field label{font-size:13px;font-weight:700;color:#475467}.field input[type=text],.field input[type=number],.field input[type=color],.field select{width:100%;height:42px;border:1px solid var(--line);border-radius:9px;background:#fff;padding:0 10px;font:inherit}.field input[type=color]{padding:3px}.field input[type=range]{width:100%}.check{display:flex;align-items:center;gap:8px;height:42px;font-size:14px}
+.btn{border:0;border-radius:10px;padding:11px 16px;font:inherit;font-weight:750;cursor:pointer;background:var(--primary);color:#fff}.btn:hover{background:var(--primary-dark)}.btn.secondary{background:#fff;color:var(--text);border:1px solid var(--line)}.btn.danger{background:#fff1f0;color:#b42318}
+.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.actions{margin-top:18px}
+.preview{display:grid;grid-template-columns:1.35fr .65fr;gap:18px;margin-top:20px}.canvasbox{min-height:340px;border:1px solid var(--line);border-radius:15px;background:repeating-conic-gradient(#f1f3f5 0 25%,#fff 0 50%) 50%/22px 22px;display:flex;align-items:center;justify-content:center;padding:18px;overflow:hidden}.canvasbox img{max-width:100%;max-height:520px;object-fit:contain}.info{border:1px solid var(--line);border-radius:15px;padding:18px}.info h3{margin-top:0}.stat{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #f0f1f3;font-size:13px}.stat:last-child{border:0}.muted{color:var(--muted);font-size:13px}.hidden{display:none!important}
+.feature-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin:0 0 70px}.feature{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px}.feature .ico{font-size:26px}.feature b{display:block;margin:9px 0 6px}.feature p{margin:0;color:var(--muted);font-size:13px;line-height:1.5}
+.notice{padding:12px 14px;border-radius:10px;background:#f9fafb;border:1px solid var(--line);color:var(--muted);font-size:13px;margin-top:15px}.result-list{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}.result-list canvas{width:100%;border:1px solid var(--line);border-radius:10px}
+footer{border-top:1px solid var(--line);padding:35px 20px;text-align:center;color:var(--muted);font-size:13px}
+@media(max-width:850px){.hero h1{font-size:39px}.controls,.preview,.feature-grid,.result-list{grid-template-columns:1fr 1fr}}@media(max-width:600px){nav{display:none}.controls,.preview,.feature-grid,.result-list{grid-template-columns:1fr}.panel{padding:16px}.category-tabs{border-radius:13px}.category-title{margin-top:14px}}
+</style>
+</head>
+<body>
+<header><div class="nav"><div class="logo">Image <span>Conversion Tool</span></div><nav><a href="#tools">Tools</a><a href="#features">Features</a><a href="#about">About</a></nav></div></header>
+
+<section class="hero">
+<span class="badge">⚡ Fast · Private · Browser Based</span>
+<h1>Image Conversion Tool</h1>
+<p>Convert, resize, compress, crop, rotate, watermark and optimize your images — plus convert PDF pages to images, all from one simple website.</p>
+</section>
+
+<main class="container" id="tools">
+<div class="category">
+  <div class="category-title">🔄 Convert & Export</div>
+  <div class="category-tabs">
+    <button class="tooltab active" data-tool="convert">🔄 Image Converter</button>
+    <button class="tooltab" data-tool="pdf">📄 PDF → Image</button>
+    <button class="tooltab" data-tool="imagepdf">📝 Image → PDF</button>
+  </div>
+</div>
+
+<div class="category">
+  <div class="category-title">⚡ Optimize</div>
+  <div class="category-tabs">
+    <button class="tooltab" data-tool="resize">📐 Resize</button>
+    <button class="tooltab" data-tool="compress">🗜️ Compress</button>
+  </div>
+</div>
+
+<div class="category">
+  <div class="category-title">✏️ Edit & Transform</div>
+  <div class="category-tabs">
+    <button class="tooltab" data-tool="crop">✂️ Crop</button>
+    <button class="tooltab" data-tool="rotate">🔃 Rotate & Flip</button>
+    <button class="tooltab" data-tool="watermark">💧 Watermark</button>
+  </div>
+</div>
+
+<div class="category">
+  <div class="category-title">🧰 Utilities</div>
+  <div class="category-tabs">
+    <button class="tooltab" data-tool="favicon">⭐ Favicon Generator</button>
+  </div>
+</div>
+
+<!-- CONVERT -->
+<section class="tool active" id="convert"><div class="panel">
+<div class="drop" data-input="convertFile"><div class="drop-icon">🖼️</div><h3>Drop an image here</h3><p>PNG, JPG, JPEG, WEBP, GIF, BMP, SVG and other browser-supported images</p><input id="convertFile" type="file" accept="image/*"></div>
+<div id="convertWork" class="hidden"><div class="controls">
+<div class="field"><label>Output format</label><select id="outFormat"><option value="image/png">PNG</option><option value="image/jpeg">JPG</option><option value="image/webp">WEBP</option></select></div>
+<div class="field"><label>Quality <span id="qLabel">90%</span></label><input id="outQuality" type="range" min="10" max="100" value="90"></div>
+<div class="field"><label>Background for JPG</label><select id="outBg"><option value="#ffffff">White</option><option value="#000000">Black</option><option value="#eeeeee">Light gray</option></select></div>
+<div class="field"><label>File name</label><input id="outName" type="text" value="converted-image"></div>
+</div><div class="actions"><button class="btn" id="convertBtn">Convert & Download</button></div><div class="preview"><div class="canvasbox"><img id="convertPreview"></div><div class="info"><h3>Image details</h3><div id="convertInfo"></div></div></div></div>
+</div></section>
+
+<!-- RESIZE -->
+<section class="tool" id="resize"><div class="panel">
+<div class="drop" data-input="resizeFile"><div class="drop-icon">📐</div><h3>Choose an image to resize</h3><p>Change dimensions while preserving aspect ratio</p><input id="resizeFile" type="file" accept="image/*"></div>
+<div id="resizeWork" class="hidden"><div class="controls">
+<div class="field"><label>Width (px)</label><input id="resizeW" type="number" min="1"></div>
+<div class="field"><label>Height (px)</label><input id="resizeH" type="number" min="1"></div>
+<div class="field"><label>Aspect ratio</label><label class="check"><input id="resizeLock" type="checkbox" checked> Lock proportions</label></div>
+<div class="field"><label>Output</label><select id="resizeFormat"><option value="image/png">PNG</option><option value="image/jpeg">JPG</option><option value="image/webp">WEBP</option></select></div>
+</div><div class="actions"><button class="btn" id="resizeBtn">Resize & Download</button></div><div class="preview"><div class="canvasbox"><img id="resizePreview"></div><div class="info"><h3>Original</h3><div id="resizeInfo"></div></div></div></div>
+</div></section>
+
+<!-- COMPRESS -->
+<section class="tool" id="compress"><div class="panel">
+<div class="drop" data-input="compressFile"><div class="drop-icon">🗜️</div><h3>Compress an image</h3><p>Reduce file size with adjustable quality</p><input id="compressFile" type="file" accept="image/*"></div>
+<div id="compressWork" class="hidden"><div class="controls">
+<div class="field"><label>Quality <span id="compressQLabel">75%</span></label><input id="compressQ" type="range" min="5" max="100" value="75"></div>
+<div class="field"><label>Format</label><select id="compressFormat"><option value="image/jpeg">JPG</option><option value="image/webp">WEBP</option><option value="image/png">PNG</option></select></div>
+<div class="field"><label>Max width (optional)</label><input id="maxWidth" type="number" min="1" placeholder="Original"></div>
+<div class="field"><label>Target filename</label><input id="compressName" value="compressed-image"></div>
+</div><div class="actions"><button class="btn" id="compressBtn">Compress & Download</button></div><p class="notice" id="compressResult">Select an image to begin.</p></div>
+</div></section>
+
+<!-- CROP -->
+<section class="tool" id="crop"><div class="panel">
+<div class="drop" data-input="cropFile"><div class="drop-icon">✂️</div><h3>Crop an image</h3><p>Enter a crop rectangle in pixels</p><input id="cropFile" type="file" accept="image/*"></div>
+<div id="cropWork" class="hidden"><div class="controls">
+<div class="field"><label>X</label><input id="cropX" type="number" min="0" value="0"></div><div class="field"><label>Y</label><input id="cropY" type="number" min="0" value="0"></div><div class="field"><label>Width</label><input id="cropW" type="number" min="1"></div><div class="field"><label>Height</label><input id="cropH" type="number" min="1"></div>
+</div><div class="actions row"><button class="btn" id="cropBtn">Crop & Download</button><button class="btn secondary" id="cropFull">Reset to Full Image</button></div><div class="preview"><div class="canvasbox"><img id="cropPreview"></div><div class="info"><h3>Tip</h3><p class="muted">For a precise crop, enter X/Y coordinates and the desired width/height in pixels.</p></div></div></div>
+</div></section>
+
+<!-- ROTATE -->
+<section class="tool" id="rotate"><div class="panel">
+<div class="drop" data-input="rotateFile"><div class="drop-icon">🔃</div><h3>Rotate and flip</h3><p>Rotate 90°, 180°, 270° or mirror the image</p><input id="rotateFile" type="file" accept="image/*"></div>
+<div id="rotateWork" class="hidden"><div class="actions row"><button class="btn secondary" data-rot="90">Rotate 90°</button><button class="btn secondary" data-rot="180">Rotate 180°</button><button class="btn secondary" data-rot="270">Rotate 270°</button><button class="btn secondary" id="flipH">Flip H</button><button class="btn secondary" id="flipV">Flip V</button><button class="btn" id="rotateBtn">Download PNG</button></div><div class="preview"><div class="canvasbox"><img id="rotatePreview"></div><div class="info"><h3>Current transform</h3><div id="rotateInfo"></div></div></div></div>
+</div></section>
+
+<!-- WATERMARK -->
+<section class="tool" id="watermark"><div class="panel">
+<div class="drop" data-input="watermarkFile"><div class="drop-icon">💧</div><h3>Add a text watermark</h3><p>Place your own text over an image</p><input id="watermarkFile" type="file" accept="image/*"></div>
+<div id="watermarkWork" class="hidden"><div class="controls">
+<div class="field"><label>Watermark text</label><input id="wmText" value="Image Conversion Tool"></div><div class="field"><label>Font size</label><input id="wmSize" type="number" value="36" min="8"></div><div class="field"><label>Color</label><input id="wmColor" type="color" value="#ffffff"></div><div class="field"><label>Opacity</label><input id="wmOpacity" type="range" min="10" max="100" value="55"></div>
+</div><div class="controls"><div class="field"><label>Position</label><select id="wmPos"><option value="br">Bottom right</option><option value="bl">Bottom left</option><option value="tr">Top right</option><option value="tl">Top left</option><option value="center">Center</option></select></div><div class="field"><label>Output</label><select id="wmFormat"><option value="image/png">PNG</option><option value="image/jpeg">JPG</option><option value="image/webp">WEBP</option></select></div></div><div class="actions"><button class="btn" id="wmBtn">Apply & Download</button></div><div class="preview"><div class="canvasbox"><img id="wmPreview"></div></div></div>
+</div></section>
+
+<!-- PDF TO IMAGE -->
+<section class="tool" id="pdf"><div class="panel">
+<div class="drop" data-input="pdfFile"><div class="drop-icon">📄</div><h3>Convert PDF pages to images</h3><p>Uses PDF.js in your browser. Internet is required the first time to load the PDF engine.</p><input id="pdfFile" type="file" accept="application/pdf"></div>
+<div id="pdfWork" class="hidden"><div class="controls"><div class="field"><label>Format</label><select id="pdfFormat"><option value="image/png">PNG</option><option value="image/jpeg">JPG</option></select></div><div class="field"><label>Scale</label><select id="pdfScale"><option value="1">1×</option><option value="1.5" selected>1.5×</option><option value="2">2×</option><option value="3">3×</option></select></div><div class="field"><label>Pages</label><input id="pdfPages" placeholder="all or 1,3,5-7"></div></div><div class="actions"><button class="btn" id="pdfBtn">Convert PDF</button></div><p id="pdfStatus" class="notice"></p><div id="pdfResults" class="result-list"></div></div>
+</div></section>
+
+<!-- IMAGE TO PDF -->
+<section class="tool" id="imagepdf"><div class="panel">
+<div class="drop" data-input="imagePdfFiles"><div class="drop-icon">📝</div><h3>Select multiple images</h3><p>Combine JPG/PNG/WebP images into one PDF</p><input id="imagePdfFiles" type="file" accept="image/*" multiple></div>
+<div id="imagePdfWork" class="hidden"><p id="imagePdfInfo" class="notice"></p><div class="actions"><button class="btn" id="imagePdfBtn">Create PDF</button></div></div>
+</div></section>
+
+<!-- FAVICON -->
+<section class="tool" id="favicon"><div class="panel">
+<div class="drop" data-input="faviconFile"><div class="drop-icon">⭐</div><h3>Make a favicon</h3><p>Create a 32×32 ICO-style PNG favicon</p><input id="faviconFile" type="file" accept="image/*"></div>
+<div id="faviconWork" class="hidden"><div class="preview"><div class="canvasbox"><img id="faviconPreview" style="image-rendering:auto"></div><div class="info"><h3>Favicon</h3><p class="muted">The generated file is a 32×32 PNG. Rename it to <b>favicon.png</b> or use it in your site.</p><button class="btn" id="faviconBtn">Download Favicon</button></div></div></div>
+</div></section>
+
+<section class="feature-grid" id="features">
+<div class="feature"><div class="ico">🔒</div><b>Private processing</b><p>Most image operations happen locally in your browser. Your image does not need to be uploaded to a server.</p></div>
+<div class="feature"><div class="ico">⚡</div><b>Fast workflow</b><p>Drag, configure and download without creating an account.</p></div>
+<div class="feature"><div class="ico">🎯</div><b>Precise controls</b><p>Choose formats, quality, dimensions, crop area, watermark settings and more.</p></div>
+<div class="feature"><div class="ico">🧰</div><b>More tools</b><p>The layout is ready to expand with filters, metadata removal, QR tools and batch processing.</p></div>
+</section>
+</main>
+
+<footer id="about">© 2026 Image Conversion Tool · A browser-based image utility website</footer>
+
+<!-- PDF.js for PDF → image -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs" type="module"></script>
+<script>
+let S={};
+
+const $=id=>document.getElementById(id);
+const ext=t=>t==='image/jpeg'?'jpg':t.split('/')[1];
+const size=n=>n<1024?n+' B':n<1048576?(n/1024).toFixed(1)+' KB':(n/1048576).toFixed(2)+' MB';
+function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1200)}
+function loadImg(file){return new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=reject;i.src=URL.createObjectURL(file)})}
+function blob(c,t,q=.9){return new Promise(r=>c.toBlob(r,t,q))}
+function makeCanvas(w,h,bg=null){const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');if(bg){x.fillStyle=bg;x.fillRect(0,0,w,h)}return [c,x]}
+function details(f,i){return `<div class="stat"><span>File</span><b>${escapeHtml(f.name)}</b></div><div class="stat"><span>Size</span><b>${size(f.size)}</b></div><div class="stat"><span>Dimensions</span><b>${i.naturalWidth} × ${i.naturalHeight}</b></div><div class="stat"><span>Type</span><b>${f.type||'Unknown'}</b></div>`}
+function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function drawTransform(i,deg=0,fx=1,fy=1,bg=null){const sw=Math.abs(deg)%180===90;const [c,x]=makeCanvas(sw?i.naturalHeight:i.naturalWidth,sw?i.naturalWidth:i.naturalHeight,bg);x.translate(c.width/2,c.height/2);x.rotate(deg*Math.PI/180);x.scale(fx,fy);x.drawImage(i,-i.naturalWidth/2,-i.naturalHeight/2);return c}
+
+document.querySelectorAll('.tooltab').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tooltab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.tool').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  $(b.dataset.tool).classList.add('active');
+  document.getElementById('tools').scrollIntoView({behavior:'smooth',block:'start'});
+});
+
+document.querySelectorAll('.drop').forEach(d=>{
+ const input=$(d.dataset.input);
+ d.onclick=e=>{if(e.target!==input)input.click()};
+ ['dragenter','dragover'].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();d.classList.add('drag')}));
+ ['dragleave','drop'].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();d.classList.remove('drag')}));
+ d.addEventListener('drop',e=>{if(e.dataTransfer.files.length){try{input.files=e.dataTransfer.files}catch{} input.dispatchEvent(new Event('change'))}});
+});
+
+// Convert
+$('outQuality').oninput=()=>$('qLabel').textContent=$('outQuality').value+'%';
+$('convertFile').onchange=async()=>{const f=$('convertFile').files[0];if(!f)return;const i=await loadImg(f);S.convert={f,i};$('convertPreview').src=i.src;$('convertInfo').innerHTML=details(f,i);$('convertWork').classList.remove('hidden')};
+$('convertBtn').onclick=async()=>{const {f,i}=S.convert,t=$('outFormat').value;const bg=$('outBg').value;const c=drawTransform(i,0,1,1,t==='image/jpeg'?bg:null);const b=await blob(c,t,+$('outQuality').value/100);download(b,($('outName').value.trim()||'converted-image')+'.'+ext(t))};
+
+// Resize
+$('resizeFile').onchange=async()=>{const f=$('resizeFile').files[0];if(!f)return;const i=await loadImg(f);S.resize={f,i};$('resizeW').value=i.naturalWidth;$('resizeH').value=i.naturalHeight;$('resizePreview').src=i.src;$('resizeInfo').innerHTML=details(f,i);$('resizeWork').classList.remove('hidden')};
+$('resizeW').oninput=()=>{if($('resizeLock').checked&&S.resize)$('resizeH').value=Math.max(1,Math.round(+$('resizeW').value*S.resize.i.naturalHeight/S.resize.i.naturalWidth))};
+$('resizeH').oninput=()=>{if($('resizeLock').checked&&S.resize)$('resizeW').value=Math.max(1,Math.round(+$('resizeH').value*S.resize.i.naturalWidth/S.resize.i.naturalHeight))};
+$('resizeBtn').onclick=async()=>{const {f,i}=S.resize,w=Math.max(1,+$('resizeW').value),h=Math.max(1,+$('resizeH').value),t=$('resizeFormat').value;const [c,x]=makeCanvas(w,h,t==='image/jpeg'?'#fff':null);x.drawImage(i,0,0,w,h);download(await blob(c,t,.9),`resized-${w}x${h}.${ext(t)}`)};
+
+// Compress
+$('compressQ').oninput=()=>$('compressQLabel').textContent=$('compressQ').value+'%';
+$('compressFile').onchange=async()=>{const f=$('compressFile').files[0];if(!f)return;const i=await loadImg(f);S.compress={f,i};$('compressResult').textContent=`Original: ${size(f.size)} · ${i.naturalWidth} × ${i.naturalHeight}`;$('compressWork').classList.remove('hidden')};
+$('compressBtn').onclick=async()=>{const {f,i}=S.compress;let w=i.naturalWidth,h=i.naturalHeight,m=+$('maxWidth').value;if(m&&w>m){h=Math.round(h*m/w);w=m}const t=$('compressFormat').value;const [c,x]=makeCanvas(w,h,t==='image/jpeg'?'#fff':null);x.drawImage(i,0,0,w,h);const b=await blob(c,t,+$('compressQ').value/100);const saved=(1-b.size/f.size)*100;$('compressResult').textContent=`Original ${size(f.size)} → ${size(b.size)} · ${saved.toFixed(1)}% ${saved>=0?'smaller':'larger'}`;download(b,($('compressName').value.trim()||'compressed-image')+'.'+ext(t))};
+
+// Crop
+$('cropFile').onchange=async()=>{const f=$('cropFile').files[0];if(!f)return;const i=await loadImg(f);S.crop={f,i};$('cropW').value=i.naturalWidth;$('cropH').value=i.naturalHeight;$('cropX').value=0;$('cropY').value=0;$('cropPreview').src=i.src;$('cropWork').classList.remove('hidden')};
+$('cropFull').onclick=()=>{const i=S.crop.i;$('cropX').value=0;$('cropY').value=0;$('cropW').value=i.naturalWidth;$('cropH').value=i.naturalHeight};
+$('cropBtn').onclick=async()=>{const {f,i}=S.crop;const x=Math.max(0,+$('cropX').value),y=Math.max(0,+$('cropY').value),w=Math.min(+$('cropW').value,i.naturalWidth-x),h=Math.min(+$('cropH').value,i.naturalHeight-y);if(w<1||h<1)return alert('Invalid crop area.');const [c,ctx]=makeCanvas(w,h);ctx.drawImage(i,x,y,w,h,0,0,w,h);download(await blob(c,'image/png',1),'cropped-image.png')};
+
+// Rotate
+$('rotateFile').onchange=async()=>{const f=$('rotateFile').files[0];if(!f)return;const i=await loadImg(f);S.rotate={f,i,deg:0,fx:1,fy:1};$('rotateWork').classList.remove('hidden');renderRotate()};
+function renderRotate(){const s=S.rotate;s.canvas=drawTransform(s.i,s.deg,s.fx,s.fy);$('rotatePreview').src=s.canvas.toDataURL('image/png');$('rotateInfo').innerHTML=`<div class="stat"><span>Rotation</span><b>${s.deg}°</b></div><div class="stat"><span>Horizontal</span><b>${s.fx<0?'Mirrored':'Normal'}</b></div><div class="stat"><span>Vertical</span><b>${s.fy<0?'Mirrored':'Normal'}</b></div>`}
+document.querySelectorAll('[data-rot]').forEach(b=>b.onclick=()=>{S.rotate.deg=(S.rotate.deg+ +b.dataset.rot)%360;renderRotate()});
+$('flipH').onclick=()=>{S.rotate.fx*=-1;renderRotate()};$('flipV').onclick=()=>{S.rotate.fy*=-1;renderRotate()};
+$('rotateBtn').onclick=async()=>download(await blob(S.rotate.canvas,'image/png',1),'rotated-image.png');
+
+// Watermark
+$('watermarkFile').onchange=async()=>{const f=$('watermarkFile').files[0];if(!f)return;const i=await loadImg(f);S.wm={f,i};$('wmPreview').src=i.src;$('watermarkWork').classList.remove('hidden')};
+$('wmBtn').onclick=async()=>{const {f,i}=S.wm;const t=$('wmFormat').value;const [c,x]=makeCanvas(i.naturalWidth,i.naturalHeight,t==='image/jpeg'?'#fff':null);x.drawImage(i,0,0);const text=$('wmText').value||'Watermark',font=+$('wmSize').value||36,margin=Math.max(15,font/2);x.font=`700 ${font}px Arial`;x.fillStyle=$('wmColor').value;x.globalAlpha=+$('wmOpacity').value/100;const mw=x.measureText(text).width;let px=margin,py=font+margin,pos=$('wmPos').value;if(pos.includes('r'))px=c.width-mw-margin;if(pos.includes('b'))py=c.height-margin;if(pos==='center'){px=(c.width-mw)/2;py=(c.height+font)/2}x.fillText(text,px,py);x.globalAlpha=1;download(await blob(c,t,.92),'watermarked-image.'+ext(t))};
+
+// Image to PDF: creates a minimal PDF using JPEG data, no external library
+function jpegDataUrlToBytes(dataUrl){const bin=atob(dataUrl.split(',')[1]),a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return a}
+function makePdf(jpegs){let chunks=[],offsets=[],pos=0;const add=s=>{const b=new TextEncoder().encode(s);chunks.push(b);pos+=b.length};add('%PDF-1.4\\n');let ids=[],obj=1;const pagesObj=obj++;const pageIds=[];const imageIds=[];jpegs.forEach(()=>{pageIds.push(obj++);imageIds.push(obj++)});const contentIds=jpegs.map(()=>obj++);const catalog=obj++;const pages=`${pagesObj} 0 obj\\n<< /Type /Pages /Kids [${pageIds.map(x=>x+' 0 R').join(' ')}] /Count ${jpegs.length} >>\\nendobj\\n`;add(pages);jpegs.forEach((j,k)=>{const id=pageIds[k],iid=imageIds[k],cid=contentIds[k],jpeg=j.bytes,w=j.w,h=j.h;offsets[id]=pos;add(`${id} 0 obj\\n<< /Type /Page /Parent ${pagesObj} 0 R /MediaBox [0 0 ${w} ${h}] /Resources << /XObject << /Im${k} ${iid} 0 R >> >> /Contents ${cid} 0 R >>\\nendobj\\n`);offsets[iid]=pos;add(`${iid} 0 obj\\n<< /Type /XObject /Subtype /Image /Width ${w} /Height ${h} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jpeg.length} >>\\nstream\\n`);chunks.push(jpeg);pos+=jpeg.length;add('\\nendstream\\nendobj\\n');const stream=`q\\n${w} 0 0 ${h} 0 0 cm\\n/Im${k} Do\\nQ`;offsets[cid]=pos;add(`${cid} 0 obj\\n<< /Length ${stream.length} >>\\nstream\\n${stream}\\nendstream\\nendobj\\n`)});
+offsets[catalog]=pos;add(`${catalog} 0 obj\\n<< /Type /Catalog /Pages ${pagesObj} 0 R >>\\nendobj\\n`);const xref=pos;add(`xref\\n0 ${catalog+1}\\n0000000000 65535 f \\n`);for(let i=1;i<=catalog;i++)add(String(offsets[i]).padStart(10,'0')+' 00000 n \\n');add(`trailer\\n<< /Size ${catalog+1} /Root ${catalog} 0 R >>\\nstartxref\\n${xref}\\n%%EOF`);return new Blob(chunks,{type:'application/pdf'})}
+$('imagePdfFiles').onchange=()=>{const fs=[...$('imagePdfFiles').files];if(!fs.length)return;$('imagePdfInfo').textContent=`${fs.length} image${fs.length>1?'s':''} selected. Images will become one PDF, one image per page.`;$('imagePdfWork').classList.remove('hidden')};
+$('imagePdfBtn').onclick=async()=>{const out=[];for(const f of $('imagePdfFiles').files){const i=await loadImg(f);const [c,ctx]=makeCanvas(i.naturalWidth,i.naturalHeight,'#fff');ctx.drawImage(i,0,0);out.push({bytes:jpegDataUrlToBytes(c.toDataURL('image/jpeg',.92)),w:i.naturalWidth,h:i.naturalHeight})}download(makePdf(out),'images.pdf')};
+
+// Favicon
+$('faviconFile').onchange=async()=>{const f=$('faviconFile').files[0];if(!f)return;const i=await loadImg(f);const [c,ctx]=makeCanvas(32,32);ctx.drawImage(i,0,0,32,32);S.favicon=c;$('faviconPreview').src=c.toDataURL('image/png');$('faviconWork').classList.remove('hidden')};
+$('faviconBtn').onclick=async()=>download(await blob(S.favicon,'image/png',1),'favicon.png');
+
+// PDF.js
+let pdfjsReady=null;
+async function getPdfJs(){if(pdfjsReady)return pdfjsReady;pdfjsReady=import('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs').then(m=>{m.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs';return m});return pdfjsReady}
+$('pdfFile').onchange=()=>{if($('pdfFile').files[0]){$('pdfWork').classList.remove('hidden');$('pdfStatus').textContent=`Selected: ${$('pdfFile').files[0].name} · ${size($('pdfFile').files[0].size)}`}};
+function pageSelection(spec,total){if(!spec.trim())return Array.from({length:total},(_,i)=>i+1);const set=new Set();spec.split(',').forEach(p=>{const q=p.trim();if(q.includes('-')){let[a,b]=q.split('-').map(Number);if(Number.isFinite(a)&&Number.isFinite(b)){if(a>b)[a,b]=[b,a];for(let n=Math.max(1,a);n<=Math.min(total,b);n++)set.add(n)}}else{const n=Number(q);if(n>=1&&n<=total)set.add(n)}});return [...set].sort((a,b)=>a-b)}
+$('pdfBtn').onclick=async()=>{try{const file=$('pdfFile').files[0];if(!file)return;const pdfjs=await getPdfJs();$('pdfStatus').textContent='Loading PDF…';$('pdfResults').innerHTML='';const doc=await pdfjs.getDocument({data:await file.arrayBuffer()}).promise;const pages=pageSelection($('pdfPages').value,doc.numPages);if(!pages.length)throw new Error('No valid pages selected.');for(const n of pages){$('pdfStatus').textContent=`Rendering page ${n} of ${pages.length}…`;const p=await doc.getPage(n);const scale=+$('pdfScale').value;const vp=p.getViewport({scale});const c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;await p.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;const t=$('pdfFormat').value;const b=await blob(c,t,.92);const wrap=document.createElement('div');const thumb=document.createElement('img');thumb.src=URL.createObjectURL(b);thumb.style.width='100%';thumb.style.borderRadius='10px';const btn=document.createElement('button');btn.className='btn';btn.style.marginTop='8px';btn.textContent=`Download page ${n}`;btn.onclick=()=>download(b,`page-${n}.${ext(t)}`);wrap.append(thumb,btn);$('pdfResults').append(wrap)}$('pdfStatus').textContent=`Done — ${pages.length} page${pages.length>1?'s':''} converted.`}catch(e){console.error(e);$('pdfStatus').textContent='PDF conversion failed: '+e.message}};
+</script>
+</body>
+</html>
